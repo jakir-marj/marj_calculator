@@ -13,8 +13,8 @@ class _HomeViewState extends State<HomeView> {
   String result = "0";
   List<String> buttonList = [
     "AC",
-    "(",
-    ")",
+    "C",
+    "%",
     "/",
     "7",
     "8",
@@ -23,12 +23,12 @@ class _HomeViewState extends State<HomeView> {
     "4",
     "5",
     "6",
-    "+",
+    "-",
     "1",
     "2",
     "3",
-    "-",
-    "C",
+    "+",
+    "00",
     "0",
     ".",
     "=",
@@ -182,6 +182,27 @@ class _HomeViewState extends State<HomeView> {
       }
       return;
     }
+
+    if (text == "%") {
+      try {
+        var exp = Parser().parse("${userInput + result}/100");
+        var eveluation = exp.evaluate(EvaluationType.REAL, ContextModel());
+        userInput = eveluation.toString();
+        result = userInput;
+        if (userInput.endsWith(".0")) {
+          userInput = userInput.replaceAll(".0", "");
+        }
+        if (result.endsWith(".0")) {
+          result = result.replaceAll(".0", "");
+        }
+        return;
+      } catch (e) {
+        userInput = "";
+        result = 'error';
+        return;
+      }
+    }
+
     userInput = userInput + text;
   }
 
@@ -191,7 +212,7 @@ class _HomeViewState extends State<HomeView> {
       var eveluation = exp.evaluate(EvaluationType.REAL, ContextModel());
       return eveluation.toString();
     } catch (e) {
-      return e.toString();
+      return 'error';
     }
   }
 }
